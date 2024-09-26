@@ -10,6 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
+    "@iconify/svelte": "^4.0.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tailwindcss/typography": "^0.5.15",
     "@tsconfig/svelte": "^5.0.4",
@@ -25,5 +26,9 @@
     "tslib": "^2.6.3",
     "typescript": "^5.5.3",
     "vite": "^5.4.1"
+  },
+  "dependencies": {
+    "@lottiefiles/dotlottie-svelte": "^0.3.19",
+    "emoji-picker-element": "^1.22.8"
   }
 }
