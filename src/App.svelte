@@ -1,15 +1,16 @@
 <script lang="ts">
   import Sidebar from "./lib/components/Sidebar.svelte";
   import Chat from "./lib/components/Chat.svelte";
-  let roomName = "Me and friends and thier friends and their friend's friends";
+  import Authorization from "./lib/components/Authorization.svelte";
+  let isAuthorized: boolean;
 </script>
 
-<div class="">
+<Authorization bind:isAuthorized>
   <main class="flex-1">
     <div class="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content h-full">
-        <Chat {roomName} />
+        <Chat />
       </div>
       <aside class="drawer-side">
         <label
@@ -21,7 +22,7 @@
       </aside>
     </div>
   </main>
-</div>
+</Authorization>
 
 <style>
 </style>

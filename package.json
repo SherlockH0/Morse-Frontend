@@ -29,6 +29,8 @@
   },
   "dependencies": {
     "@lottiefiles/dotlottie-svelte": "^0.3.19",
-    "emoji-picker-element": "^1.22.8"
+    "axios": "^1.7.7",
+    "emoji-picker-element": "^1.22.8",
+    "jwt-decode": "^4.0.0"
   }
 }
