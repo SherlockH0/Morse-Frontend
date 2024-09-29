@@ -1,7 +1,7 @@
 <script lang="ts">
   import RegisterForm from "./RegisterForm.svelte";
   import LoginForm from "./LoginForm.svelte";
-  export let isAuthorized: boolean;
+  import { isAuthenticatdStore } from "../scripts/auth";
 
   // Toggle modal state using <dialog> element's builtin .showModal and .close
   let dialog: HTMLDialogElement;
@@ -9,7 +9,7 @@
   const toggleModal = (isOpen: boolean) =>
     isOpen ? dialog.showModal() : dialog.close();
 
-  $: if (dialog != null) toggleModal(!isAuthorized);
+  $: if (dialog != null) toggleModal(!$isAuthenticatdStore);
 </script>
 
 <dialog class="modal" bind:this={dialog} on:cancel|preventDefault>

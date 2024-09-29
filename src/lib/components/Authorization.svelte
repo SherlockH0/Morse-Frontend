@@ -1,19 +1,21 @@
 <script lang="ts">
   import AuthorizationDialog from "./AuthorizationDialog.svelte";
   import Loading from "./Loading.svelte";
-  import { ACCESS_TOKEN, REFRESH_TOKEN } from "../scripts/constants";
+
   import { jwtDecode } from "jwt-decode";
-  import api from "../scripts/api";
   import { onMount } from "svelte";
-  export let isAuthorized: boolean | null = null;
+
+  import { ACCESS_TOKEN, REFRESH_TOKEN } from "../scripts/constants";
+  import { isAuthenticatdStore } from "../scripts/auth";
+  import api from "../scripts/api";
 
   onMount(() => {
     auth().catch(() => {
-      isAuthorized = false;
+      $isAuthenticatdStore = false;
     });
   });
 
-  const refreshToken = async () => {
+  async function refreshToken() {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
     try {
       const res = await api.post("/api/token/refresh/", {
@@ -22,20 +24,20 @@
 
       if (res.status === 200) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        isAuthorized = true;
+        $isAuthenticatdStore = true;
       } else {
-        isAuthorized = false;
+        $isAuthenticatdStore = false;
       }
     } catch (error) {
-      isAuthorized = false;
+      $isAuthenticatdStore = false;
       console.log(error);
     }
-  };
+  }
 
-  const auth = async () => {
+  async function auth() {
     const token = localStorage.getItem(ACCESS_TOKEN);
     if (!token) {
-      isAuthorized = false;
+      $isAuthenticatdStore = false;
       return;
     }
     const decoded = jwtDecode(token);
@@ -45,14 +47,14 @@
     if (tokenExpiration && tokenExpiration < now) {
       await refreshToken();
     } else {
-      isAuthorized = true;
+      $isAuthenticatdStore = true;
     }
-  };
+  }
 </script>
 
-{#if isAuthorized === null}
+{#if $isAuthenticatdStore === null}
   <Loading />
 {:else}
-  <AuthorizationDialog {isAuthorized} />
+  <AuthorizationDialog />
   <slot />
 {/if}
