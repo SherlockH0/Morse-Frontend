@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
   export let name;
   export let args;
-  export let error;
-  export let value;
+  export let errors: string[];
+  export let value: string;
 </script>
 
 <label class="form-control w-full">
@@ -14,11 +14,17 @@
     {...args}
     bind:value
     class="input input-bordered w-full"
-    class:input-error={error != undefined}
+    class:input-error={errors != undefined}
   />
-  {#if error}
+  {#if errors}
     <div class="label">
-      <span class="label-text-alt">{error}</span>
+      <span class="label-text-alt">
+        <ul>
+          {#each errors as error}
+            <li>{error}</li>
+          {/each}
+        </ul>
+      </span>
     </div>
   {/if}
 </label>

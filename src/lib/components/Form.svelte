@@ -3,10 +3,9 @@
 
 Generic form component.
 
-# Props:
-- `route: string` - **required**. The api route the data will be posted to.
-- `name: string` - **required**. The form name
-- `fields: Record<string, any>` - **required**. The form fields that will be displayed:
+@prop `route: string` - **required**. The api route the data will be posted to.
+@prop `name: string` - **required**. The form name
+@prop `fields: Record<string, any>` - **required**. The form fields that will be displayed:
 ```js
 fields = {
   field_name: {
@@ -16,11 +15,11 @@ fields = {
   },
 }
 ```
-- `errors: Record<string, any>`. All the fields' errors. Key `detail` is used to display form errors (not bound to a specific field) (for django compatibility)
-- `values: Record<string, any>`. Values of form fields.
+@prop `errors: Record<string, any>`. All the fields' errors. Key `detail` is used to display form errors (not bound to a specific field) (for django compatibility)
+@prop `values: Record<string, any>`. Values of form fields.
 
-- `clean: Function`. Will be run before sending the form data to the backend and can be use to validate form data. If there are any validation errors, should raise a `ValidationError` error Returns clean form data of type `object`
-- `onValid: Function`. Will be run after reciving the response from the server. It recieves the response object and can be used, for example, to save user data to local storage.
+@prop `clean: Function`. Will be run before sending the form data to the backend and can be use to validate form data. If there are any validation errors, should raise a `ValidationError` error Returns clean form data of type `object`
+@prop `onValid: Function`. Will be run after reciving the response from the server. It recieves the response object and can be used, for example, to save user data to local storage.
 -->
 
 <script lang="ts">
@@ -36,7 +35,7 @@ fields = {
   export let name: string;
 
   export let fields: Record<string, any>;
-  export let errors: Record<string, any> = {};
+  export let errors: Record<string, string[]> = {};
   export let values: Record<string, any> = {};
 
   export let clean = (formData: object): object => {
@@ -87,7 +86,7 @@ fields = {
     </div>
   {/if}
   {#each Object.entries(fields) as [name, args]}
-    <Input {name} {args} error={errors[name]} bind:value={values[name]} />
+    <Input {name} {args} errors={errors[name]} bind:value={values[name]} />
   {/each}
   <button class="btn btn-neutral w-full">{name}</button>
 </form>

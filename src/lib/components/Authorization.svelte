@@ -1,3 +1,10 @@
+<!--
+@component
+
+Authorization wrapper. If user is not logged in, covers wrapped content with an `AuthorizationDialog`.
+If access token is present but is expired, an api call will be made to refresh access token.
+-->
+
 <script lang="ts">
   import AuthorizationDialog from "./AuthorizationDialog.svelte";
   import Loading from "./Loading.svelte";

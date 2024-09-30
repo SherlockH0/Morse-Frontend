@@ -22,7 +22,7 @@
       required: true,
     },
   };
-  let errors: Record<string, any> = {};
+  let errors: Record<string, string[]> = {};
   let values: Record<string, any> = {};
 
   function clean(formData: Record<string, any>): object {
@@ -31,7 +31,8 @@
     let passwordConfirmation = formData.confirm_password;
 
     if (passwordConfirmation != password) {
-      errors.confirm_password = "The password confirmation does not match";
+      errors.confirm_password = [];
+      errors.confirm_password[0] = "The password confirmation does not match";
 
       throw "Field error";
     }
