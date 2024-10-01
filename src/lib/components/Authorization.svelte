@@ -10,16 +10,13 @@ If access token is present but is expired, an api call will be made to refresh a
   import Loading from "./Loading.svelte";
 
   import { jwtDecode } from "jwt-decode";
-  import { onMount } from "svelte";
 
   import { ACCESS_TOKEN, REFRESH_TOKEN } from "../scripts/constants";
   import { isAuthenticatdStore } from "../scripts/auth";
   import api from "../scripts/api";
 
-  onMount(() => {
-    auth().catch(() => {
-      $isAuthenticatdStore = false;
-    });
+  auth().catch(() => {
+    $isAuthenticatdStore = false;
   });
 
   async function refreshToken() {

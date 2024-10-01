@@ -1,9 +1,21 @@
+<!--
+@component
+Textarea for sending messages with emoji select.
+Dispatches a `message` event when the message is sent.
+-->
+
 <script lang="ts">
-  import Icon from "@iconify/svelte";
   import "emoji-picker-element";
-  import { tick } from "svelte";
-  let textarea: any;
+  import { fade, blur, fly, slide, scale } from "svelte/transition";
+
+  import Icon from "@iconify/svelte";
+
+  import { tick, createEventDispatcher } from "svelte";
+
+  let textarea: HTMLTextAreaElement;
   let value = "";
+
+  const dispatch = createEventDispatcher();
 
   async function choseEmoji(event: any) {
     let emoji: string = event.detail.unicode;
@@ -19,15 +31,30 @@
     textarea.selectionEnd = textarea.selectionStart =
       selectionStart + emoji.length;
   }
+
+  function sendMessage() {
+    dispatch("message", {
+      text: value,
+    });
+    value = "";
+  }
+
+  function handleEnter(event: KeyboardEvent) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  }
 </script>
 
-<div id="form" class="flex items-center gap-1">
+<div class="flex items-center gap-1">
   <textarea
     class="textarea textarea-bordered w-full resize-none"
     placeholder="Write a message..."
     rows="1"
     bind:this={textarea}
-    {value}
+    on:keydown={handleEnter}
+    bind:value
   ></textarea>
   <div class="dropdown dropdown-end dropdown-top dropdown-hover">
     <div tabindex="0" role="button" class="btn text-lg">
@@ -37,7 +64,9 @@
       <emoji-picker on:emoji-click={choseEmoji}></emoji-picker>
     </div>
   </div>
-  <button class="btn"><Icon icon="ci:check-big" class="size-6" /></button>
+  <button class="btn" on:click={sendMessage}
+    ><Icon icon="ci:check-big" class="size-6" /></button
+  >
 </div>
 
 <style>
