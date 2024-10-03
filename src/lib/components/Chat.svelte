@@ -1,46 +1,76 @@
 <script lang="ts">
   import type { ComponentEvents } from "svelte";
+  import { onMount } from "svelte";
   import Icon from "@iconify/svelte";
   import MenuButton from "./MenuButton.svelte";
   import Textinput from "./Textinput.svelte";
   import ChatBubble from "./ChatBubble.svelte";
   import { ACCESS_TOKEN } from "../scripts/constants";
+  import { isAuthenticatdStore } from "../scripts/auth";
+  import api from "../scripts/api";
+  import InfiniteScroll from "./InfiniteScroll.svelte";
 
   export let roomName = "test";
 
-  let messages: any[] = [];
+  let messages: any = [];
+  let newBatch: any = [];
+  let newMessage: any = [];
   let chat: HTMLElement;
 
-  const token = localStorage.getItem(ACCESS_TOKEN);
-  const chatSocket = new WebSocket(
-    "ws://" +
-      import.meta.env.VITE_API_URL +
-      "/ws/chat/" +
-      roomName +
-      "/?token=" +
-      token,
-  );
+  let chatSocket: WebSocket | null;
+  let nextUrl = `/api/messages/${roomName}/`;
 
-  chatSocket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log(data);
-    messages.push(data);
-    messages[messages.length - 1].id = messages.length;
-    messages = messages;
-  };
+  async function fetchData() {
+    const response = await api.get(nextUrl);
+
+    newBatch = response.data.results;
+    nextUrl = response.data.next;
+    console.log(response);
+  }
+  onMount(() => {
+    fetchData();
+  });
+
+  isAuthenticatdStore.subscribe((value) => {
+    if (value) {
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      chatSocket = new WebSocket(
+        "ws://" +
+          import.meta.env.VITE_API_URL +
+          "/ws/chat/" +
+          roomName +
+          "/?token=" +
+          token,
+      );
+      chatSocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        newMessage = [data];
+      };
+    } else {
+      chatSocket = null;
+    }
+  });
 
   function sendMessage(event: ComponentEvents<Textinput>["message"]) {
-    chat.scroll({
-      top: 0,
-      behavior: "smooth",
-    });
-    const message = event.detail.text;
-    chatSocket.send(
-      JSON.stringify({
-        message: message,
-      }),
-    );
+    if (chatSocket) {
+      chat.scroll({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      const body = event.detail.text;
+      chatSocket.send(
+        JSON.stringify({
+          body: body,
+        }),
+      );
+    }
   }
+
+  $: (messages = [...newMessage, ...messages, ...newBatch]),
+    (newBatch = []),
+    (newMessage = []);
 </script>
 
 <div class="flex h-svh flex-col">
@@ -65,13 +95,17 @@
   </header>
   <section
     bind:this={chat}
-    class="flex w-full grow flex-col-reverse overflow-y-auto p-4 ps-10"
+    class="flex w-full grow flex-col-reverse overflow-x-scroll p-4 ps-10"
   >
-    <div class="transition duration-1000">
-      {#each messages as message (message.id)}
-        <ChatBubble {...message} />
-      {/each}
-    </div>
+    <InfiniteScroll
+      hasMore={nextUrl != null}
+      threshold={100}
+      on:loadMore={fetchData}
+      reverse
+    />
+    {#each messages as message (message.id)}
+      <ChatBubble {message} />
+    {/each}
   </section>
   <footer class="p-4">
     <Textinput on:message={sendMessage} />

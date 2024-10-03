@@ -1,15 +1,34 @@
 <script lang="ts">
   import { is_emoji, unicode2LottieUrl } from "../scripts/utils";
   import { DotLottieSvelte } from "@lottiefiles/dotlottie-svelte";
-  import { cubicOut, expoOut } from "svelte/easing";
-  import { fade, fly, scale, blur, draw, crossfade } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
+  import { scale, blur } from "svelte/transition";
+  import { getRelativeTimeString } from "../scripts/utils";
+  import { onMount } from "svelte";
 
-  export let user: string;
-  export let previous_user: string = "";
-  export let time: string;
-  export let message: string;
-  export let avatar: string;
-  export let me: boolean = false;
+  export let message: Record<string, any>;
+  let time = Date.now();
+
+  let user: string = message.user.username;
+  let previous_user: string = "";
+  let body: string = message.body;
+  let avatar: string;
+  let me: boolean = false;
+
+  $: sent = getRelativeTimeString(new Date(message.datetime_sent), time);
+
+  onMount(() => {
+    const interval = setInterval(
+      () => {
+        time = Date.now();
+      },
+      1000 * 60 * 2,
+    );
+
+    return () => {
+      clearInterval(interval);
+    };
+  });
 </script>
 
 <div
@@ -27,11 +46,11 @@
   </div>
   <div class="chat-header">
     {previous_user !== user ? user : ""}
-    <time class="text-xs opacity-50">{time}</time>
+    <time class="text-xs opacity-50">{sent}</time>
   </div>
-  {#if is_emoji(message)}
+  {#if is_emoji(body)}
     <div class="mx-4 mt-1 size-36">
-      <DotLottieSvelte src={unicode2LottieUrl(message)} autoplay loop />
+      <DotLottieSvelte src={unicode2LottieUrl(body)} autoplay loop />
     </div>
   {:else}
     <div
@@ -39,7 +58,7 @@
       class:chat-bubble-accent={me}
       transition:scale={{ easing: cubicOut, duration: 1000 }}
     >
-      {message}
+      {body}
     </div>
   {/if}
 </div>

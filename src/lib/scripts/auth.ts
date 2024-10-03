@@ -1,4 +1,6 @@
 import { writable, type Writable } from "svelte/store";
 
 export let isAuthenticatdStore: Writable<boolean> | Writable<null> =
-  writable(false);
+  writable(null);
+
+export let usernameStore: Writable<string> | Writable<null> = writable(null);

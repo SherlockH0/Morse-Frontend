@@ -6,7 +6,6 @@ Dispatches a `message` event when the message is sent.
 
 <script lang="ts">
   import "emoji-picker-element";
-  import { fade, blur, fly, slide, scale } from "svelte/transition";
 
   import Icon from "@iconify/svelte";
 
