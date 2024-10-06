@@ -14,6 +14,8 @@ Dispatches a `message` event when the message is sent.
   let textarea: HTMLTextAreaElement;
   let value = "";
 
+  const isWhitespaceString = (str: string) => !/\S/.test(str);
+
   const dispatch = createEventDispatcher();
 
   async function choseEmoji(event: any) {
@@ -32,6 +34,7 @@ Dispatches a `message` event when the message is sent.
   }
 
   function sendMessage() {
+    if (isWhitespaceString(value)) return;
     dispatch("message", {
       text: value,
     });
@@ -63,7 +66,10 @@ Dispatches a `message` event when the message is sent.
       <emoji-picker on:emoji-click={choseEmoji}></emoji-picker>
     </div>
   </div>
-  <button class="btn" on:click={sendMessage}
+  <button
+    class="btn"
+    on:click={sendMessage}
+    disabled={isWhitespaceString(value)}
     ><Icon icon="ci:check-big" class="size-6" /></button
   >
 </div>
