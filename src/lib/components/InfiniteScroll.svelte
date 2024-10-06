@@ -29,13 +29,6 @@
         e.target.clientHeight +
         e.target.scrollTop * isReverse;
 
-    console.log(
-      offset,
-      e.target.scrollHeight,
-      e.target.clientHeight,
-      e.target.scrollTop,
-    );
-
     if (offset <= threshold) {
       if (!isLoadMore && hasMore) {
         dispatch("loadMore");

@@ -1,40 +1,42 @@
 <script lang="ts">
   import type { ComponentEvents } from "svelte";
+
   import { onMount } from "svelte";
+
   import Icon from "@iconify/svelte";
   import MenuButton from "./MenuButton.svelte";
   import Textinput from "./Textinput.svelte";
   import ChatBubble from "./ChatBubble.svelte";
+  import InfiniteScroll from "./InfiniteScroll.svelte";
+
   import { ACCESS_TOKEN } from "../scripts/constants";
   import { isAuthenticatedStore } from "../scripts/auth";
   import api from "../scripts/api";
-  import InfiniteScroll from "./InfiniteScroll.svelte";
 
   export let roomName = "test";
 
-  let messages: any = [];
-  let chat: HTMLElement;
-
-  let chatSocket: WebSocket | null;
   const limit = 10;
 
-  $: nextUrl = `/api/messages/${roomName}/?limit=${limit}&offset=${messages.length}`;
+  let messages: any = [];
+  let chat: HTMLElement;
+  let chatSocket: WebSocket | null;
   let next: string | null = "";
+
+  $: nextUrl = `/api/messages/${roomName}/?limit=${limit}&offset=${messages.length}`;
 
   async function fetchData() {
     const response = await api.get(nextUrl);
 
     messages = [...messages, ...response.data.results];
-
     next = response.data.next;
-    console.log(response);
   }
+
   onMount(() => {
     fetchData();
   });
 
-  isAuthenticatedStore.subscribe((value) => {
-    if (value) {
+  isAuthenticatedStore.subscribe((isAuthenticated) => {
+    if (isAuthenticated) {
       const token = localStorage.getItem(ACCESS_TOKEN);
       chatSocket = new WebSocket(
         "ws://" +

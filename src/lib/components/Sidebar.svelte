@@ -5,6 +5,7 @@
   import Dialog from "./Dialog.svelte";
   import Logout from "./Logout.svelte";
   import UserUpdateForm from "./UserUpdateForm.svelte";
+  import { userStore } from "../scripts/auth";
 
   let open = () => {};
   let openSmall = () => {};
@@ -45,6 +46,7 @@
         <div class="w-24 rounded-full">
           <img
             src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+            alt=""
           />
         </div>
       </div>
@@ -53,7 +55,7 @@
       class="btn btn-ghost join-item btn-sm text-center"
       on:click={openSmall}
     >
-      @{username}
+      @{$userStore.username}
     </button>
   </div>
   <div class="divider"></div>

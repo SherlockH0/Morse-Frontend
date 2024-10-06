@@ -12,11 +12,12 @@
 
 <dialog
   id="modal"
-  class="modal sm:modal-middle"
+  class="modal"
   bind:this={dialog}
+  class:sm:modal-middle={!small}
   class:modal-bottom={!small}
 >
-  <div class="modal-box {small ? 'max-w-xs' : 'sm:max-w-md'}">
+  <div class="modal-box {small ? 'max-w-sm' : 'sm:max-w-md'}">
     {#if !small}
       <form method="dialog">
         <button class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"

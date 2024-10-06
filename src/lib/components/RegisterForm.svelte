@@ -54,7 +54,7 @@
 </script>
 
 <Form
-  route="/api/user/register/"
+  route="/api/users/"
   name="Register"
   {fields}
   {errors}

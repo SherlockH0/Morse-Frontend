@@ -12,7 +12,7 @@ If access token is present but is expired, an api call will be made to refresh a
   import { jwtDecode } from "jwt-decode";
 
   import { ACCESS_TOKEN, REFRESH_TOKEN } from "../scripts/constants";
-  import { isAuthenticatedStore } from "../scripts/auth";
+  import { userStore, isAuthenticatedStore } from "../scripts/auth";
   import api from "../scripts/api";
 
   auth().catch(() => {
