@@ -2,7 +2,14 @@
   import MenuButton from "./MenuButton.svelte";
   import RoomSceleton from "./RoomSceleton.svelte";
   import ThemeController from "./ThemeController.svelte";
-  import Icon from "@iconify/svelte";
+  import Dialog from "./Dialog.svelte";
+  import Logout from "./Logout.svelte";
+  import UserUpdateForm from "./UserUpdateForm.svelte";
+
+  let open = () => {};
+  let openSmall = () => {};
+
+  let username = "sherlock";
 </script>
 
 <div
@@ -10,24 +17,17 @@
 >
   <!-- Sidebar content here -->
   <ul class="menu menu-horizontal w-full justify-between">
-    <details class="dropdown">
-      <summary class="group btn btn-ghost m-1">
-        <Icon
-          icon="ci:settings"
-          class="size-5 transition-transform group-hover:rotate-[60deg]"
-        />
-      </summary>
-      <ul
-        class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
-      >
-        <li><a>Item 1</a></li>
-        <li><a>Item 2</a></li>
-      </ul>
-    </details>
-
+    <li>
+      <MenuButton
+        icon="ci:settings"
+        class="group-hover:rotate-[60deg]"
+        on:click={open}
+      />
+    </li>
     <ThemeController />
-
-    <MenuButton icon="ci:chat-add" class="group-hover:translate-x-0.5" />
+    <li>
+      <MenuButton icon="ci:chat-add" class="group-hover:translate-x-0.5" />
+    </li>
   </ul>
   <ul id="rooms" class="flex flex-col space-y-4">
     <RoomSceleton />
@@ -35,3 +35,32 @@
     <RoomSceleton />
   </ul>
 </div>
+
+<Dialog bind:open>
+  <h3 class="text-lg font-bold">Profile Settings</h3>
+  <div class="divider"></div>
+  <div class="flex flex-col items-center gap-2">
+    <div class="grid place-items-center">
+      <div class="avatar">
+        <div class="w-24 rounded-full">
+          <img
+            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+          />
+        </div>
+      </div>
+    </div>
+    <button
+      class="btn btn-ghost join-item btn-sm text-center"
+      on:click={openSmall}
+    >
+      @{username}
+    </button>
+  </div>
+  <div class="divider"></div>
+
+  <Logout />
+</Dialog>
+
+<Dialog bind:open={openSmall} small>
+  <UserUpdateForm />
+</Dialog>

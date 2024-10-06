@@ -5,7 +5,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Futura"', ...defaultTheme.fontFamily.sans, "Noto Color Emoji"],
+        sans: [
+          '"Satoshi"',
+          ...defaultTheme.fontFamily.sans,
+          "Noto Color Emoji",
+        ],
       },
     },
   },

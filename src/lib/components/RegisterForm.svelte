@@ -3,7 +3,7 @@
   import type { AxiosResponse } from "axios";
   import { ACCESS_TOKEN, REFRESH_TOKEN } from "../scripts/constants";
   import api from "../scripts/api";
-  import { isAuthenticatdStore } from "../scripts/auth";
+  import { isAuthenticatedStore } from "../scripts/auth";
 
   const fields: any = {
     username: {
@@ -49,7 +49,7 @@
     localStorage.setItem(ACCESS_TOKEN, login.data.access);
     localStorage.setItem(REFRESH_TOKEN, login.data.refresh);
 
-    $isAuthenticatdStore = true;
+    $isAuthenticatedStore = true;
   }
 </script>
 

@@ -1,19 +1,11 @@
 <script lang="ts">
   import RegisterForm from "./RegisterForm.svelte";
   import LoginForm from "./LoginForm.svelte";
-  import { isAuthenticatdStore } from "../scripts/auth";
-
-  // Toggle modal state using <dialog> element's builtin .showModal and .close
-  let dialog: HTMLDialogElement;
-
-  const toggleModal = (isOpen: boolean) =>
-    isOpen ? dialog.showModal() : dialog.close();
-
-  $: if (dialog != null) toggleModal(!$isAuthenticatdStore);
 </script>
 
-<dialog class="modal" bind:this={dialog} on:cancel|preventDefault>
-  <div class="modal-box max-w-md">
+<section class="grid h-svh w-full place-items-center">
+  <div class="w-80 md:w-96">
+    <h1 class="mb-6 text-3xl font-bold">Login or Register to&nbsp;Continue</h1>
     <div role="tablist" class="tabs tabs-lifted tabs-lg">
       <input
         type="radio"
@@ -45,4 +37,4 @@
       </div>
     </div>
   </div>
-</dialog>
+</section>

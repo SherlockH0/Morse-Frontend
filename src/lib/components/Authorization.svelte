@@ -12,11 +12,11 @@ If access token is present but is expired, an api call will be made to refresh a
   import { jwtDecode } from "jwt-decode";
 
   import { ACCESS_TOKEN, REFRESH_TOKEN } from "../scripts/constants";
-  import { isAuthenticatdStore } from "../scripts/auth";
+  import { isAuthenticatedStore } from "../scripts/auth";
   import api from "../scripts/api";
 
   auth().catch(() => {
-    $isAuthenticatdStore = false;
+    $isAuthenticatedStore = false;
   });
 
   async function refreshToken() {
@@ -28,12 +28,12 @@ If access token is present but is expired, an api call will be made to refresh a
 
       if (res.status === 200) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        $isAuthenticatdStore = true;
+        $isAuthenticatedStore = true;
       } else {
-        $isAuthenticatdStore = false;
+        $isAuthenticatedStore = false;
       }
     } catch (error) {
-      $isAuthenticatdStore = false;
+      $isAuthenticatedStore = false;
       console.log(error);
     }
   }
@@ -41,7 +41,7 @@ If access token is present but is expired, an api call will be made to refresh a
   async function auth() {
     const token = localStorage.getItem(ACCESS_TOKEN);
     if (!token) {
-      $isAuthenticatdStore = false;
+      $isAuthenticatedStore = false;
       return;
     }
     const decoded = jwtDecode(token);
@@ -51,14 +51,15 @@ If access token is present but is expired, an api call will be made to refresh a
     if (tokenExpiration && tokenExpiration < now) {
       await refreshToken();
     } else {
-      $isAuthenticatdStore = true;
+      $isAuthenticatedStore = true;
     }
   }
 </script>
 
-{#if $isAuthenticatdStore === null}
+{#if $isAuthenticatedStore === null}
   <Loading />
+{:else if $isAuthenticatedStore === true}
+  <slot />
 {:else}
   <AuthorizationDialog />
-  <slot />
 {/if}

@@ -3,7 +3,7 @@
   import Form from "./Form.svelte";
 
   import { ACCESS_TOKEN, REFRESH_TOKEN } from "../scripts/constants";
-  import { isAuthenticatdStore } from "../scripts/auth";
+  import { isAuthenticatedStore } from "../scripts/auth";
 
   const fields: any = {
     username: {
@@ -22,7 +22,7 @@
     localStorage.setItem(ACCESS_TOKEN, res.data.access);
     localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
 
-    $isAuthenticatdStore = true;
+    $isAuthenticatedStore = true;
   }
 </script>
 

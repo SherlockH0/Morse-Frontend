@@ -6,32 +6,34 @@
   import Textinput from "./Textinput.svelte";
   import ChatBubble from "./ChatBubble.svelte";
   import { ACCESS_TOKEN } from "../scripts/constants";
-  import { isAuthenticatdStore } from "../scripts/auth";
+  import { isAuthenticatedStore } from "../scripts/auth";
   import api from "../scripts/api";
   import InfiniteScroll from "./InfiniteScroll.svelte";
 
   export let roomName = "test";
 
   let messages: any = [];
-  let newBatch: any = [];
-  let newMessage: any = [];
   let chat: HTMLElement;
 
   let chatSocket: WebSocket | null;
-  let nextUrl = `/api/messages/${roomName}/`;
+  const limit = 10;
+
+  $: nextUrl = `/api/messages/${roomName}/?limit=${limit}&offset=${messages.length}`;
+  let next: string | null = "";
 
   async function fetchData() {
     const response = await api.get(nextUrl);
 
-    newBatch = response.data.results;
-    nextUrl = response.data.next;
+    messages = [...messages, ...response.data.results];
+
+    next = response.data.next;
     console.log(response);
   }
   onMount(() => {
     fetchData();
   });
 
-  isAuthenticatdStore.subscribe((value) => {
+  isAuthenticatedStore.subscribe((value) => {
     if (value) {
       const token = localStorage.getItem(ACCESS_TOKEN);
       chatSocket = new WebSocket(
@@ -44,8 +46,7 @@
       );
       chatSocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-
-        newMessage = [data];
+        messages = [data, ...messages];
       };
     } else {
       chatSocket = null;
@@ -67,10 +68,6 @@
       );
     }
   }
-
-  $: (messages = [...newMessage, ...messages, ...newBatch]),
-    (newBatch = []),
-    (newMessage = []);
 </script>
 
 <div class="flex h-svh flex-col">
@@ -88,8 +85,12 @@
     </div>
     <div>
       <ul class="menu menu-horizontal">
-        <MenuButton icon="ci:user-add" />
-        <MenuButton icon="ci:more-vertical" />
+        <li>
+          <MenuButton icon="ci:user-add" />
+        </li>
+        <li>
+          <MenuButton icon="ci:more-vertical" />
+        </li>
       </ul>
     </div>
   </header>
@@ -98,7 +99,7 @@
     class="flex w-full grow flex-col-reverse overflow-x-scroll p-4 ps-10"
   >
     <InfiniteScroll
-      hasMore={nextUrl != null}
+      hasMore={next != null}
       threshold={100}
       on:loadMore={fetchData}
       reverse
