@@ -6,7 +6,7 @@ Chat bubble component
 @prop previous_user: string. An id of the author of the previous message in the chat. If it is equal to the current message's user's id, the username above the bubble isn't shown
 -->
 <script lang="ts">
-  import { is_emoji, unicode2LottieUrl } from "../scripts/utils";
+  import { getLottieJSONOfEmoji } from "../scripts/utils";
   import { DotLottieSvelte } from "@lottiefiles/dotlottie-svelte";
 
   import { onMount } from "svelte";
@@ -40,6 +40,11 @@ Chat bubble component
       clearInterval(interval);
     };
   });
+
+  let animation: string | null = null;
+  getLottieJSONOfEmoji(body).then((response) => {
+    animation = response;
+  });
 </script>
 
 <div
@@ -56,12 +61,12 @@ Chat bubble component
     </div>
   </div>
   <div class="chat-header">
-    {user.username}
+    <span class:font-semibold={me}>{user.username}</span>
     <time class="text-xs opacity-50">{sent}</time>
   </div>
-  {#if is_emoji(body)}
+  {#if animation}
     <div class="mx-4 mt-1 size-36">
-      <DotLottieSvelte src={unicode2LottieUrl(body)} autoplay loop />
+      <DotLottieSvelte data={animation} autoplay loop />
     </div>
   {:else}
     <div class="chat-bubble" class:chat-bubble-accent={me}>

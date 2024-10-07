@@ -11,7 +11,7 @@
   }
 </script>
 
-<button class="btn btn-outline btn-error w-full" on:click={logout}>
-  <Icon icon="ci:log-out" class="size-6" />
+<button class="btn btn-outline btn-error btn-sm w-full" on:click={logout}>
+  <Icon icon="ci:log-out" class="size-5" />
   Logout</button
 >

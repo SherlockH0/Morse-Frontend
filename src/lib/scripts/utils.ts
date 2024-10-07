@@ -1,9 +1,35 @@
-export const is_emoji = (character: string): boolean => {
-  // let emoji = /\p{Extended_Pictographic}/u.test(character);
-  // let length = character.match(/./gu)!.length;
-  // return emoji && length == 1;
-  return false;
-};
+// @ts-ignore
+import emojiUnicode from "emoji-unicode";
+import type { AxiosResponse } from "axios";
+import axios from "axios";
+
+export function isEmoji(character: string): boolean {
+  let emoji = /\p{Extended_Pictographic}/u.test(character);
+
+  let length = character.length;
+
+  return emoji && length <= 6;
+}
+
+export async function getLottieJSONOfEmoji(string: string) {
+  if (isEmoji(string)) {
+    const emojiToUnicode = emojiUnicode(string).replace(/ /g, "_");
+
+    const animation: string | null = await axios
+      .get(
+        `https://fonts.gstatic.com/s/e/notoemoji/latest/${emojiToUnicode}/lottie.json`,
+      )
+      .then((response: AxiosResponse) => {
+        return response.data;
+      })
+      .catch(() => {
+        return null;
+      });
+    return animation;
+  }
+
+  return null;
+}
 
 export const unicode2LottieUrl = (unicode: string): string =>
   `https://fonts.gstatic.com/s/e/notoemoji/latest/${unicode.codePointAt(0)!.toString(16)}/lottie.json`;
