@@ -5,12 +5,17 @@
   import Dialog from "./Dialog.svelte";
   import Logout from "./Logout.svelte";
   import UserUpdateForm from "./UserUpdateForm.svelte";
+  import Room from "./Room.svelte";
   import { userStore } from "../scripts/auth";
+  import api from "../scripts/api";
 
   let open = () => {};
   let openSmall = () => {};
 
-  let username = "sherlock";
+  async function fetchData() {
+    const response = await api.get(`/api/rooms/`);
+    return response.data.results;
+  }
 </script>
 
 <div
@@ -31,9 +36,20 @@
     </li>
   </ul>
   <ul id="rooms" class="flex flex-col space-y-4">
-    <RoomSceleton />
-    <RoomSceleton />
-    <RoomSceleton />
+    {#await fetchData()}
+      <li>
+        <RoomSceleton />
+      </li>
+      <li>
+        <RoomSceleton />
+      </li>
+    {:then rooms}
+      {#each rooms as room}
+        <li>
+          <Room {room} />
+        </li>
+      {/each}
+    {/await}
   </ul>
 </div>
 

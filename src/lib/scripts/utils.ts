@@ -2,6 +2,7 @@
 import emojiUnicode from "emoji-unicode";
 import type { AxiosResponse } from "axios";
 import axios from "axios";
+import { EMOJI_URL } from "./constants";
 
 export function isEmoji(character: string): boolean {
   let emoji = /\p{Extended_Pictographic}/u.test(character);
@@ -16,9 +17,7 @@ export async function getLottieJSONOfEmoji(string: string) {
     const emojiToUnicode = emojiUnicode(string).replace(/ /g, "_");
 
     const animation: string | null = await axios
-      .get(
-        `https://fonts.gstatic.com/s/e/notoemoji/latest/${emojiToUnicode}/lottie.json`,
-      )
+      .get(`${EMOJI_URL}/${emojiToUnicode}/lottie.json`)
       .then((response: AxiosResponse) => {
         return response.data;
       })
@@ -30,9 +29,6 @@ export async function getLottieJSONOfEmoji(string: string) {
 
   return null;
 }
-
-export const unicode2LottieUrl = (unicode: string): string =>
-  `https://fonts.gstatic.com/s/e/notoemoji/latest/${unicode.codePointAt(0)!.toString(16)}/lottie.json`;
 
 /**
  * Convert a date to a relative time string, such as
