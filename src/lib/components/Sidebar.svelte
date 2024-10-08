@@ -39,7 +39,7 @@
 </script>
 
 <div
-  class="min-h-full w-screen space-y-4 border-r border-neutral bg-base-200 p-4 text-base-content md:w-80"
+  class="min-h-full w-screen space-y-4 border-r border-neutral bg-base-200 p-3 text-base-content md:w-80"
 >
   <!-- Sidebar content here -->
   <ul class="menu menu-horizontal w-full justify-between">
