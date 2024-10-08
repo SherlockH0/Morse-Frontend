@@ -53,7 +53,10 @@ Chat bubble component
       <DotLottieSvelte data={animation} autoplay loop />
     </div>
   {:else}
-    <div class="chat-bubble" class:chat-bubble-accent={me}>
+    <div
+      class="chat-bubble text-pretty break-words"
+      class:chat-bubble-accent={me}
+    >
       {body}
     </div>
   {/if}
