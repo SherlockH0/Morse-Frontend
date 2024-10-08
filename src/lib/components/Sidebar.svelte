@@ -8,9 +8,29 @@
   import Room from "./Room.svelte";
   import { userStore } from "../scripts/auth";
   import api from "../scripts/api";
+  import { dateTimeStore } from "../scripts/utils";
 
   let open = () => {};
   let openSmall = () => {};
+  let rooms: any[];
+
+  function compareByLastMessage(
+    a: Record<string, any>,
+    b: Record<string, any>,
+  ) {
+    if (a.last_message.datetime_sent < b.last_message.datetime_sent) {
+      return 1;
+    } else if (a.last_message.datetime_sent > b.last_message.datetime_sent) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
+  $: fetchData().then((r) => {
+    rooms = r.sort(compareByLastMessage);
+  }),
+    $dateTimeStore;
 
   async function fetchData() {
     const response = await api.get(`/api/rooms/`);
@@ -19,7 +39,7 @@
 </script>
 
 <div
-  class="min-h-full w-80 space-y-4 border-r border-neutral bg-base-200 p-4 text-base-content"
+  class="min-h-full w-screen space-y-4 border-r border-neutral bg-base-200 p-4 text-base-content md:w-80"
 >
   <!-- Sidebar content here -->
   <ul class="menu menu-horizontal w-full justify-between">
@@ -36,20 +56,20 @@
     </li>
   </ul>
   <ul id="rooms" class="flex flex-col space-y-4">
-    {#await fetchData()}
-      <li>
-        <RoomSceleton />
-      </li>
-      <li>
-        <RoomSceleton />
-      </li>
-    {:then rooms}
-      {#each rooms as room}
+    {#if rooms}
+      {#each rooms as room (room.id)}
         <li>
           <Room {room} />
         </li>
       {/each}
-    {/await}
+    {:else}
+      <li>
+        <RoomSceleton />
+      </li>
+      <li>
+        <RoomSceleton />
+      </li>
+    {/if}
   </ul>
 </div>
 

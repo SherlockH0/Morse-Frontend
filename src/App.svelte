@@ -6,7 +6,7 @@
 
 <Authorization>
   <main class="flex-1">
-    <div class="drawer lg:drawer-open">
+    <div class="drawer md:drawer-open">
       <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content h-full">
         <Chat />

@@ -3,6 +3,7 @@ import emojiUnicode from "emoji-unicode";
 import type { AxiosResponse } from "axios";
 import axios from "axios";
 import { EMOJI_URL } from "./constants";
+import { writable, type Writable } from "svelte/store";
 
 export function isEmoji(character: string): boolean {
   let emoji = /\p{Extended_Pictographic}/u.test(character);
@@ -80,3 +81,12 @@ export function getRelativeTimeString(
   const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
   return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]);
 }
+
+export const dateTimeStore: Writable<number> = writable(Date.now());
+
+setInterval(
+  () => {
+    dateTimeStore.set(Date.now());
+  },
+  1000 * 60 * 0.5,
+);

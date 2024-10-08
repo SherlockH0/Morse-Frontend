@@ -8,8 +8,7 @@ Chat bubble component
 <script lang="ts">
   import { getLottieJSONOfEmoji } from "../scripts/utils";
   import { DotLottieSvelte } from "@lottiefiles/dotlottie-svelte";
-
-  import { onMount } from "svelte";
+  import { dateTimeStore } from "../scripts/utils";
 
   import { cubicOut } from "svelte/easing";
   import { blur } from "svelte/transition";
@@ -19,27 +18,15 @@ Chat bubble component
 
   export let message: Record<string, any>;
 
-  let time = Date.now();
-
   let user = message.user;
   let body = message.body;
   let avatar: string;
 
+  const now: number = new Date(message.datetime_sent).getTime();
+  $dateTimeStore = Date.now();
+
   $: me = message.user.id == $userStore.id;
-  $: sent = getRelativeTimeString(new Date(message.datetime_sent), time);
-
-  onMount(() => {
-    const interval = setInterval(
-      () => {
-        time = Date.now();
-      },
-      1000 * 60 * 2,
-    );
-
-    return () => {
-      clearInterval(interval);
-    };
-  });
+  $: sent = getRelativeTimeString(now, $dateTimeStore);
 
   let animation: string | null = null;
   getLottieJSONOfEmoji(body).then((response) => {
@@ -47,10 +34,7 @@ Chat bubble component
   });
 </script>
 
-<div
-  class="chat chat-start"
-  transition:blur={{ easing: cubicOut, duration: 800 }}
->
+<div class="chat chat-start" in:blur={{ easing: cubicOut, duration: 800 }}>
   <div class="avatar chat-image">
     <div class="w-10 rounded-full">
       <img

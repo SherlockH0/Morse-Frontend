@@ -9,10 +9,14 @@ interface JwtPayload {
 
 export const isAuthenticatedStore: Writable<boolean> | Writable<null> =
   writable(null);
+
 export const userStore: Writable<Record<string, any>> = writable({
   username: "",
   id: "",
 });
+
+export const currentRoomStore: Writable<string> | Writable<null> =
+  writable(null);
 
 async function retreiveUser() {
   const token = localStorage.getItem(ACCESS_TOKEN);
@@ -36,6 +40,7 @@ isAuthenticatedStore.subscribe((isAuthenticated) => {
         });
       })
       .catch(() => {
+        // @ts-ignore
         isAuthenticatedStore.set(false);
       });
   } else {
