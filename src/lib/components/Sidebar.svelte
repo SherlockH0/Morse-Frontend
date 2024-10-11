@@ -4,16 +4,16 @@
   import ThemeController from "./ThemeController.svelte";
   import Dialog from "./Dialog.svelte";
   import Logout from "./Logout.svelte";
-  import UserUpdateForm from "./UserUpdateForm.svelte";
+  import UsernameForm from "./UsernameForm.svelte";
   import Room from "./Room.svelte";
   import { userStore } from "../scripts/auth";
   import api from "../scripts/api";
   import { dateTimeStore } from "../scripts/utils";
+  import Icon from "@iconify/svelte";
 
   let open = () => {};
-  let openSmall = () => {};
+  let openUsernameForm = () => {};
   let rooms: any[];
-
   function compareByLastMessage(
     a: Record<string, any>,
     b: Record<string, any>,
@@ -78,7 +78,13 @@
   <div class="divider"></div>
   <div class="flex flex-col items-center gap-2">
     <div class="grid place-items-center">
-      <div class="avatar">
+      <div class="avatar relative">
+        <button
+          on:click={() => open()}
+          class="btn btn-circle btn-primary btn-sm absolute -right-1 -top-1 outline outline-base-100"
+        >
+          <Icon icon="ci:edit" class="size-4" />
+        </button>
         <div class="w-24 rounded-full">
           <img
             src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
@@ -89,7 +95,7 @@
     </div>
     <button
       class="btn btn-ghost join-item btn-sm text-center"
-      on:click={openSmall}
+      on:click={openUsernameForm}
     >
       @{$userStore.username}
     </button>
@@ -98,7 +104,4 @@
 
   <Logout />
 </Dialog>
-
-<Dialog bind:open={openSmall} small>
-  <UserUpdateForm />
-</Dialog>
+<UsernameForm bind:open={openUsernameForm} />

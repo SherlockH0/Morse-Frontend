@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { ComponentEvents } from "svelte";
 
-  import { onMount } from "svelte";
-
   import Icon from "@iconify/svelte";
   import MenuButton from "./MenuButton.svelte";
   import Textinput from "./Textinput.svelte";

@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { IMAGE_PREFIX } from "../scripts/constants";
   import { currentRoomStore } from "../scripts/auth";
+  import { CldImage } from "svelte-cloudinary";
+  import { IMAGE_PREFIX } from "../scripts/constants";
 
   export let room: Record<string, any>;
 
   $: isCurrent = room.room.name == $currentRoomStore;
   $: unread = room.unread_messages;
-  $: console.log(room);
+
+  const image_src: string = room.room.avatar;
 </script>
 
 <button
@@ -18,7 +20,7 @@
 >
   <div class="avatar">
     <div class="w-14 rounded-full">
-      <img src={IMAGE_PREFIX + room.room.avatar} alt="" />
+      <CldImage src={image_src} width={56} height={56} />
     </div>
   </div>
   <div

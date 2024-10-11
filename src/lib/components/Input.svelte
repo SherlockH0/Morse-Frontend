@@ -6,17 +6,15 @@ Input field.
 @prop args;
 @prop errors: string[];
 @prop value: string;
-@prop join = false;
  -->
 <script lang="ts">
   export let name;
   export let args;
   export let errors: string[];
   export let value: string;
-  export let join = false;
 </script>
 
-<label class="form-control" class:join-item={join}>
+<label class="form-control">
   <input
     {name}
     {...args}
