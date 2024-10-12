@@ -15,12 +15,12 @@ Chat bubble component
 
   import { getRelativeTimeString } from "../scripts/utils";
   import { userStore } from "../scripts/auth";
+  import { CldImage } from "svelte-cloudinary";
 
   export let message: Record<string, any>;
 
   let user = message.user;
   let body = message.body;
-  let avatar: string;
 
   const now: number = new Date(message.datetime_sent).getTime();
   $dateTimeStore = Date.now();
@@ -37,10 +37,11 @@ Chat bubble component
 <div class="chat chat-start" in:blur={{ easing: cubicOut, duration: 800 }}>
   <div class="avatar chat-image">
     <div class="w-10 rounded-full">
-      <img
-        alt="{user} avatar"
-        src={avatar ||
-          "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/599e3b95636919.5eb96c0445ea7.jpg"}
+      <CldImage
+        alt="{user.username} avatar"
+        src={user.avatar}
+        width="40"
+        height="40"
       />
     </div>
   </div>

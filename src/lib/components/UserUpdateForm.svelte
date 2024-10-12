@@ -1,37 +1,41 @@
 <script lang="ts">
+  import type { SvelteComponent } from "svelte";
   import api from "../scripts/api";
   import { userStore } from "../scripts/auth";
   import Dialog from "./Dialog.svelte";
 
   let errors: string[] = [];
-  export let open = () => {};
-  export let close = () => {};
+
   export let title: string;
-  export let value = $userStore.username;
-  userStore.subscribe((user) => {
-    value = user.username;
-  });
+  export let value: any;
+  export let fieldname: string;
+  export let url: string | null = null;
+  export let headers: object = {};
+  export let put = false;
+
+  export let dialog: SvelteComponent;
 
   function handleSubmit() {
     errors = [];
-    api
-      .patch(`/api/users/${$userStore.id}/`, {
-        username: value,
-      })
+    let data: Record<string, any> = {};
+    data[fieldname] = value;
+
+    const func = put ? api.put : api.patch;
+
+    func(url || `/api/users/${$userStore.id}/`, data, { headers: headers })
       .then((response) => {
-        $userStore.username = response.data.username;
-        close();
+        $userStore[fieldname] = response.data[fieldname];
+        dialog.close();
       })
       .catch((err) => {
         if (err != "Field error" && err.request) {
-          errors = err.response.data.username;
+          errors = err.response.data[fieldname];
         }
-        console.log(errors.length > 0);
       });
   }
 </script>
 
-<Dialog bind:open bind:close small>
+<Dialog bind:this={dialog} small>
   <h4 class="mb-4 font-bold">{title}</h4>
   <form on:submit|preventDefault={handleSubmit} class="relative flex flex-col">
     <div class="form-control">

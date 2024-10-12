@@ -17,6 +17,7 @@
       required: true,
     },
   };
+  const params = { skipAuthRefresh: true };
 
   async function onValid(res: AxiosResponse) {
     localStorage.setItem(ACCESS_TOKEN, res.data.access);
@@ -26,4 +27,4 @@
   }
 </script>
 
-<Form route="/api/token/" name="Login" {fields} {onValid} />
+<Form route="/api/token/" name="Login" {fields} {onValid} {params} />

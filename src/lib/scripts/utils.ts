@@ -82,7 +82,7 @@ export function getRelativeTimeString(
   return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]);
 }
 
-export const dateTimeStore: Writable<number> = writable(Date.now());
+export const dateTimeStore = writable<number>(Date.now());
 
 setInterval(
   () => {

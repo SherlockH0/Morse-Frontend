@@ -18,8 +18,6 @@
   let chatSocket: WebSocket | null;
   let next: string | null = "";
 
-  $: console.log("messages:", messages);
-
   async function fetchData(room: string) {
     const nextUrl = `/api/messages/${room}/?limit=${limit}&offset=${messages.length}`;
 
@@ -45,7 +43,6 @@
           token,
       );
       chatSocket.onmessage = (event) => {
-        console.log("message");
         const data = JSON.parse(event.data);
         messages = [data, ...messages];
       };

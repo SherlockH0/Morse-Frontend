@@ -5,15 +5,21 @@
   import Dialog from "./Dialog.svelte";
   import Logout from "./Logout.svelte";
   import UsernameForm from "./UsernameForm.svelte";
+  import AvatarForm from "./AvatarForm.svelte";
   import Room from "./Room.svelte";
   import { userStore } from "../scripts/auth";
   import api from "../scripts/api";
   import { dateTimeStore } from "../scripts/utils";
   import Icon from "@iconify/svelte";
+  import { CldImage } from "svelte-cloudinary";
+  import { SvelteComponent } from "svelte";
 
-  let open = () => {};
-  let openUsernameForm = () => {};
+  let settingsDialog: SvelteComponent;
+  let usernameFormDialog: SvelteComponent;
+  let avatarFormDialog: SvelteComponent;
+
   let rooms: any[];
+
   function compareByLastMessage(
     a: Record<string, any>,
     b: Record<string, any>,
@@ -47,7 +53,9 @@
       <MenuButton
         icon="ci:settings"
         class="group-hover:rotate-[60deg]"
-        on:click={open}
+        on:click={() => {
+          settingsDialog.open();
+        }}
       />
     </li>
     <ThemeController />
@@ -73,29 +81,35 @@
   </ul>
 </div>
 
-<Dialog bind:open>
+<Dialog bind:this={settingsDialog}>
   <h3 class="text-lg font-bold">Profile Settings</h3>
   <div class="divider"></div>
   <div class="flex flex-col items-center gap-2">
     <div class="grid place-items-center">
       <div class="avatar relative">
         <button
-          on:click={() => open()}
+          on:click={() => {
+            avatarFormDialog.open();
+          }}
           class="btn btn-circle btn-primary btn-sm absolute -right-1 -top-1 outline outline-base-100"
         >
           <Icon icon="ci:edit" class="size-4" />
         </button>
         <div class="w-24 rounded-full">
-          <img
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-            alt=""
-          />
+          {#if $userStore.avatar != ""}
+            <CldImage
+              src={$userStore.avatar}
+              alt="avatar"
+              width="96"
+              height="96"
+            />
+          {/if}
         </div>
       </div>
     </div>
     <button
       class="btn btn-ghost join-item btn-sm text-center"
-      on:click={openUsernameForm}
+      on:click={usernameFormDialog.open()}
     >
       @{$userStore.username}
     </button>
@@ -104,4 +118,5 @@
 
   <Logout />
 </Dialog>
-<UsernameForm bind:open={openUsernameForm} />
+<UsernameForm bind:dialog={usernameFormDialog} />
+<AvatarForm bind:dialog={avatarFormDialog} />

@@ -1,4 +1,4 @@
-import { writable, type Writable } from "svelte/store";
+import { writable } from "svelte/store";
 import { ACCESS_TOKEN } from "./constants";
 import { jwtDecode } from "jwt-decode";
 import api from "./api";
@@ -7,16 +7,15 @@ interface JwtPayload {
   user_id: string;
 }
 
-export const isAuthenticatedStore: Writable<boolean> | Writable<null> =
-  writable(null);
+export let isAuthenticatedStore = writable<boolean | null>(null);
 
-export const userStore: Writable<Record<string, any>> = writable({
+export const userStore = writable<Record<string, string>>({
   username: "",
   id: "",
+  avatar: "aibz4iotlv3ia8cpawo0",
 });
 
-export const currentRoomStore: Writable<string> | Writable<null> =
-  writable(null);
+export let currentRoomStore = writable<string | null>(null);
 
 async function retreiveUser() {
   const token = localStorage.getItem(ACCESS_TOKEN);
@@ -34,22 +33,16 @@ isAuthenticatedStore.subscribe((isAuthenticated) => {
   if (isAuthenticated) {
     retreiveUser()
       .then((response) => {
-        userStore.set({
-          username: response.data.username,
-          id: response.data.id,
-        });
+        userStore.set(response.data);
       })
       .catch(() => {
-        // @ts-ignore
         isAuthenticatedStore.set(false);
       });
   } else {
     userStore.set({
       username: "",
       id: "",
+      avatar: "",
     });
   }
-});
-userStore.subscribe((value) => {
-  console.log(value);
 });

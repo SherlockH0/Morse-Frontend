@@ -33,6 +33,7 @@ fields = {
 
   export let route: string;
   export let name: string;
+  export let params = {};
 
   export let fields: Record<string, any>;
   export let errors: Record<string, string[]> = {};
@@ -53,7 +54,7 @@ fields = {
     try {
       let cleanData = clean(values);
 
-      const res = await api.post(route, cleanData);
+      const res = await api.post(route, cleanData, params);
 
       onValid(res);
     } catch (err: any) {
